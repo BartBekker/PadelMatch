@@ -103,6 +103,8 @@
             <label style={lbl}>Wachtwoord</label><input style={{...inp,marginBottom:16}} type="password" placeholder="Minimaal 6 tekens" value={af.password} onChange={e=>setAf(p=>({...p,password:e.target.value}))}/>
             <button onClick={am==="login"?login:reg} disabled={al} style={{width:"100%",background:"#2563eb",color:"#fff",border:"none",borderRadius:14,padding:16,fontWeight:700,fontSize:16,cursor:"pointer"}}>{al?"Even geduld...":am==="login"?"Inloggen":"Account aanmaken"}</button>
             <div style={{textAlign:"center",marginTop:16,fontSize:14,color:"#64748b"}}>{am==="login"?"Nog geen account? ":"Al een account? "}<span onClick={()=>setAm(am==="login"?"register":"login")} style={{color:"#2563eb",cursor:"pointer",fontWeight:600}}>{am==="login"?"Aanmelden":"Inloggen"}</span></div>
+<div style={{textAlign:"center",marginTop:12,fontSize:14}}><span onClick={async()=>{if(!af.email)return toast2("Vul eerst je e-mailadres in",true);const{error}=await sb.auth.resetPasswordForEmail(af.email);if(error)return toast2(error.message,true);toast2("Check je e-mail voor een resetlink! 📧");}} style={{color:"#64748b",cursor:"pointer",textDecoration:"underline"}}>Wachtwoord vergeten?</span></div>
+
           </div>}
           {screen==="home"&&<div>
             <div style={{background:"linear-gradient(135deg,#1e3a5f,#164e63)",borderRadius:20,padding:24,marginBottom:20,border:"1px solid #1e40af"}}>
