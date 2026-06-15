@@ -59,6 +59,8 @@
       const [af,setAf]=useState({email:"",password:"",name:"",region:"Breda",level:"Intermediate"});
       const [ns,setNs]=useState({region:"Breda",level:"Intermediate",date:"",time:"",location:"",spots:"4"});
       const [al,setAl]=useState(false);
+const [newPw,setNewPw]=useState("");
+
 
       const toast2=(msg,err=false)=>{setToast({msg,err});setTimeout(()=>setToast(null),3000);};
 
@@ -66,6 +68,7 @@
         sb.auth.getSession().then(({data:{session}})=>{setUser(session?.user??null);if(session?.user)fp(session.user.id);setLoading(false);});
         const {data:{subscription}}=sb.auth.onAuthStateChange((_,session)=>{setUser(session?.user??null);if(session?.user)fp(session.user.id);});
         return()=>subscription.unsubscribe();
+        if(window.location.hash.includes("type=recovery"))setScreen("resetpw");
       },[]);
       useEffect(()=>{fs();},[]);
 
@@ -83,6 +86,13 @@
       const filtered=sessions.filter(s=>(fr==="Alle regio's"||s.region===fr)&&(fl==="Alle niveaus"||s.level===fl));
       const mySessions=sessions.filter(s=>(parts[s.id]||[]).some(p=>p.user_id===user?.id));
       const nav=[{id:"home",icon:"⚡",label:"Home"},{id:"sessions",icon:"🎾",label:"Sessies"},{id:"create",icon:"＋",label:"Aanmaken"},{id:"profile",icon:"👤",label:"Profiel"}];
+if(user && screen==="resetpw") return <div style={{fontFamily:"system-ui,sans-serif",background:"#0f172a",minHeight:"100vh",color:"#f1f5f9",maxWidth:430,margin:"0 auto",padding:"60px 20px 20px"}}>
+  <div style={{fontSize:20,fontWeight:800,marginBottom:4}}>Nieuw wachtwoord</div>
+  <div style={{fontSize:13,color:"#64748b",marginBottom:24}}>Kies een nieuw wachtwoord</div>
+  <label style={lbl}>Nieuw wachtwoord</label>
+  <input type="password" value={newPw} onChange={e=>setNewPw(e.target.value)} placeholder="Minimaal 6 tekens" style={{...inp,marginBottom:16}}/>
+  <button onClick={async()=>{const{error}=await sb.auth.updateUser({password:newPw});if(error)return toast2(error.message,true);toast2("Wachtwoord opgeslagen! 🎉");setScreen("home");}} style={{width:"100%",background:"#2563eb",color:"#fff",border:"none",borderRadius:14,padding:16,fontWeight:700,fontSize:16,cursor:"pointer"}}>Opslaan</button>
+</div>;
 
       if(loading)return <div style={{background:"#0f172a",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:18}}>🎾 Laden...</div>;
 
